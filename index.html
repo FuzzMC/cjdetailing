@@ -22,6 +22,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         window.db = db; window.addDoc = addDoc; window.collection = collection;
+
+        /* Duplicate children for seamless scroll and enable hover-to-pause */
+document.querySelectorAll('.ticker__wrap').forEach(wrap => {
+  // Duplicate items for continuous loop
+  const items = Array.from(wrap.children);
+  items.forEach(node => wrap.appendChild(node.cloneNode(true)));
+
+  // Compute a duration based on content width (pixels -> seconds)
+  const pxPerSecond = 120; // adjust speed (higher = faster)
+  const contentWidth = wrap.scrollWidth;
+  const durationSeconds = Math.max(10, Math.round(contentWidth / pxPerSecond));
+  wrap.style.animationDuration = durationSeconds + 's';
+
+  // Pause on hover
+  wrap.parentElement.addEventListener('mouseenter', () => wrap.classList.add('paused'));
+  wrap.parentElement.addEventListener('mouseleave', () => wrap.classList.remove('paused'));
+
+  // Accessibility: stop animation if reduced motion requested
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    wrap.classList.add('paused');
+  }
+});
     </script>
 
     <style>
@@ -145,6 +167,50 @@
         footer { padding: 40px 0 120px; text-align: center; color: #555; font-size: 0.7rem; border-top: 1px solid var(--glass-border); }
 
         @media (max-width: 768px) { .ba-grid { grid-template-columns: 1fr; } .hero-text h1 { font-size: 4rem; } }
+
+        /* ── New styles for contact section ── */
+        #contact {
+            background: var(--glass);
+            padding: 80px 8% 140px;
+            text-align: center;
+        }
+        #contact h2 { font-size: 2.5rem; margin-bottom: 30px; }
+        #contact .contact-info { max-width: 500px; margin: 0 auto; }
+        #contact p { margin: 15px 0; font-size: 1.1rem; }
+        #contact a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        #contact .social-links { font-size: 2.5rem; margin: 40px 0; }
+        #contact .social-links a { margin: 0 20px; color: #fff; transition: 0.3s; }
+        #contact .social-links a:hover { color: var(--primary); transform: scale(1.1); }
+
+        /* Ticker container */
+.ticker { overflow: hidden; width: 100%; }
+
+/* Scrolling wrapper */
+.ticker__wrap {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+  animation: ticker-scroll linear infinite;
+  will-change: transform;
+}
+
+/* Individual item */
+.item {
+  flex: 0 0 auto;
+  width: 280px;
+  box-sizing: border-box;
+}
+.item img { width: 100%; height: auto; display: block; border-radius: 6px; }
+.item figcaption { text-align: center; font-size: 0.9rem; padding-top: 6px; }
+
+/* Pause animation when wrapper has .paused */
+.ticker__wrap.paused { animation-play-state: paused; }
+
+/* Animation: translate left by 50% (we duplicate items for seamless loop) */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
     </style>
 </head>
 <body>
@@ -177,12 +243,29 @@
             </div>
         </div>
 
-        <section class="section">
-            <div class="ba-grid">
-                <div class="ba-item reveal"><img src="https://images.unsplash.com/photo-1599256621730-535171e28e50?auto=format&fit=crop&w=1200"><div class="label">BEFORE</div></div>
-                <div class="ba-item reveal"><img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200"><div class="label" style="color: var(--primary);">AFTER</div></div>
-            </div>
-        </section>
+<section class="before-after-gallery ticker" aria-label="Before and after gallery">
+  <div class="ticker__wrap">
+    <figure class="item">
+      <img src="img/1.jpg" alt="Before 1">
+      <figcaption>Before 1</figcaption>
+    </figure>
+    <figure class="item">
+      <img src="img/2.jpg" alt="After 1">
+      <figcaption>After 1</figcaption>
+    </figure>
+
+    <figure class="item">
+      <img src="img/3.jpg" alt="Before 2">
+      <figcaption>Before 2</figcaption>
+    </figure>
+    <figure class="item">
+      <img src="img/4.jpg" alt="After 2">
+      <figcaption>After 2</figcaption>
+    </figure>
+
+    <!-- Add more pairs as needed -->
+  </div>
+</section>
 
         <section class="section">
             <div class="grid">
@@ -236,6 +319,14 @@
                 <div class="option" onclick="setPkg('Quick Wash')"><h4 id="label-quick">Quick Wash</h4><p id="price-quick"></p></div>
                 <div class="option" onclick="setPkg('Full House')"><h4 id="label-full">Full House</h4><p id="price-full"></p></div>
                 <div class="option" onclick="setPkg('The Detail')"><h4 id="label-detail">The Detail</h4><p id="price-detail"></p></div>
+
+                <!-- Added: Other Services button linking to contact section -->
+                <div style="margin-top: 40px; text-align: center;">
+                    <button class="btn" onclick="window.location.href='#contact'; closeBooking();">Other Services</button>
+                    <p style="margin-top: 12px; font-size: 0.85rem; color: #aaa;">
+                        Looking for paint correction, ceramic coating, engine detailing, headlight restoration or something custom?<br>Let’s chat!
+                    </p>
+                </div>
             </div>
 
             <div id="step3" class="step">
@@ -272,6 +363,39 @@
             </div>
         </div>
     </div>
+
+    <!-- New Contact Section -->
+    <section id="contact" class="section">
+        <h2>Get in Touch for Custom Services</h2>
+        <div class="contact-info">
+            <p><i class="fab fa-whatsapp" style="margin-right: 10px; color: var(--primary); font-size: 1.4rem;"></i> 
+               <a href="https://wa.me/27691485037?text=Hi%20C&J%20Detailing!%20I%20need%20a%20custom%20service..." target="_blank">+27 69 148 5037 (WhatsApp)</a></p>
+            
+            <p><i class="fas fa-phone" style="margin-right: 10px; color: var(--primary); font-size: 1.4rem;"></i> 
+               +27 69 148 5037</p>
+            
+            <p><i class="fas fa-envelope" style="margin-right: 10px; color: var(--primary); font-size: 1.4rem;"></i> 
+               DM us or email: connor@cjdetailingcpt.com</p>
+
+            <div class="social-links">
+                <a href="https://www.instagram.com/cjdetailingcpt" target="_blank" title="@cjdetailingcpt on Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@cjdetailingcpt" target="_blank" title="@cjdetailingcpt on TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+
+            <p style="margin-top: 30px; font-size: 0.9rem; color: #777;">
+                Mobile service across Cape Town — tell us what you need and we’ll sort you out!
+            </p>
+        </div>
+    </section>
+
+    <!-- Updated Footer with your socials -->
+    <footer style="padding-bottom: 180px;">
+        <div class="social-links" style="font-size: 2rem; margin-bottom: 20px;">
+            <a href="https://www.instagram.com/cjdetailingcpt" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@cjdetailingcpt" target="_blank"><i class="fab fa-tiktok"></i></a>
+        </div>
+        &copy; <script>document.write(new Date().getFullYear());</script> C&J AUTO DETAILING • CPT • MOBILE
+    </footer>
 
     <script>
         let bookingData = {};
@@ -344,5 +468,4 @@
         document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
     </script>
 </body>
-
 </html>
