@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>C&J Auto Detailing | Premium Mobile Care</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        const firebaseConfig = {
+  apiKey: "AIzaSyAMwNwPcyMUChElbDat3F9nZ9p2HeuZkDE",
+  authDomain: "cjdetailingcpt-c70b7.firebaseapp.com",
+  databaseURL: "https://cjdetailingcpt-c70b7-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "cjdetailingcpt-c70b7",
+  storageBucket: "cjdetailingcpt-c70b7.firebasestorage.app",
+  messagingSenderId: "862092537528",
+  appId: "1:862092537528:web:8481b30ade19bb282a4e4d"
+};
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        window.db = db; window.addDoc = addDoc; window.collection = collection;
+    </script>
+
+    <style>
+        .booking-bar {
+            animation: slideUpFooter 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+            transition: all 0.4s ease;
+        }
+
+        .booking-bar:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(0, 132, 255, 0.2);
+        }
+
+        .booking-bar p {
+            animation: textPulse 3s infinite ease-in-out;
+        }
+
+        @keyframes slideUpFooter {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes textPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; color: var(--primary); }
+        }
+        :root {
+            --primary: #0084ff;
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.04);
+            --glass-heavy: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --blur: blur(25px);
+        }
+
+        html, body {
+            margin: 0; padding: 0; width: 100%; background-color: var(--bg);
+            color: #fff; font-family: 'Inter', sans-serif;
+        }
+
+        #page-wrapper {
+            animation: zoomOutEntrance 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            width: 100%;
+        }
+        @keyframes zoomOutEntrance {
+            from { transform: scale(1.1); opacity: 0; filter: blur(10px); }
+            to { transform: scale(1); opacity: 1; filter: blur(0); }
+        }
+
+        nav {
+            position: fixed !important; top: 0; left: 0; width: 100%; height: 75px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 8%; z-index: 100000; background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--glass-border); box-sizing: border-box;
+        }
+        .logo { font-weight: 900; font-size: 1.2rem; letter-spacing: 1px; }
+        .logo span { color: var(--primary); }
+
+        .booking-bar {
+            position: fixed !important; bottom: 20px; left: 20px; right: 20px; height: 65px;
+            background: rgba(15, 15, 15, 0.9); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+            border: 1px solid var(--glass-border); border-radius: 100px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 25px; z-index: 100000; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+        .booking-bar p { font-weight: 800; font-size: 0.75rem; animation: glow 2s infinite; }
+        @keyframes glow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; color: var(--primary); } }
+        .book-now { background: var(--primary); color: white; padding: 12px 22px; border-radius: 50px; font-weight: 900; font-size: 0.7rem; text-decoration: none; cursor: pointer; }
+
+        header {
+            height: 90vh; display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle, rgba(0,132,255,0.1), transparent), url('https://images.unsplash.com/photo-1552933529-e359b2477262?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover; background-position: center; text-align: center;
+        }
+        .hero-text h1 { font-size: clamp(3.5rem, 15vw, 7rem); font-weight: 900; letter-spacing: -4px; line-height: 0.8; }
+
+        .ticker-wrap { border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); background: var(--glass); padding: 12px 0; overflow: hidden; }
+        .ticker { display: flex; white-space: nowrap; animation: marquee 25s linear infinite; }
+        .ticker span { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0 40px; color: #888; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .section { padding: 80px 8%; }
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1s cubic-bezier(0.2, 1, 0.3, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .ba-item { position: relative; border-radius: 25px; overflow: hidden; border: 1px solid var(--glass-border); transition: 0.5s; }
+        .ba-item:hover { border-color: var(--primary); transform: scale(1.02); }
+        .ba-item img { width: 100%; display: block; }
+        .label { position: absolute; bottom: 15px; left: 15px; background: rgba(0,0,0,0.6); padding: 6px 14px; border-radius: 100px; font-size: 0.6rem; font-weight: bold; border: 1px solid var(--glass-border); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .card { background: var(--glass-heavy); backdrop-filter: var(--blur); border: 1px solid var(--glass-border); padding: 40px 30px; border-radius: 35px; text-align: center; transition: 0.5s; }
+        .card:hover { transform: translateY(-10px); border-color: var(--primary); background: rgba(255,255,255,0.1); }
+        .price { font-size: 2.8rem; font-weight: 900; color: var(--primary); margin: 20px 0; display: block; }
+        .package-list { list-style: none; text-align: left; margin: 20px 0; color: #999; font-size: 0.85rem; }
+        .package-list li { margin-bottom: 10px; display: flex; align-items: center; }
+        .package-list li i { color: var(--primary); margin-right: 10px; }
+        .btn { background: #fff; color: #000; padding: 15px 35px; border-radius: 50px; font-weight: 800; border: none; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: var(--primary); color: #fff; box-shadow: 0 10px 20px rgba(0,132,255,0.4); }
+
+        #bookingOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 200000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(15px); }
+        .booking-content { width: 90%; max-width: 450px; background: #0c0c0c; border: 1px solid var(--glass-border); border-radius: 40px; padding: 35px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .close { position: absolute; top: 20px; right: 25px; font-size: 1.8rem; cursor: pointer; opacity: 0.5; transition: 0.3s; }
+        .close:hover { opacity: 1; color: var(--primary); }
+
+        .step { display: none; }
+        .step.active { display: block; animation: stepFade 0.4s ease-out; }
+        @keyframes stepFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .option { background: #151515; border: 1px solid #333; padding: 20px; border-radius: 20px; margin-bottom: 12px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .option:hover { background: var(--primary); transform: scale(1.03); border-color: #fff; }
+        .option h4 { font-size: 1.1rem; margin-bottom: 4px; }
+        .option p { font-size: 0.75rem; opacity: 0.6; }
+
+        input { width: 100%; padding: 16px; margin-bottom: 15px; border-radius: 15px; background: #111; border: 1px solid #333; color: #fff; outline: none; box-sizing: border-box; }
+        input:focus { border-color: var(--primary); background: #181818; }
+
+        footer { padding: 40px 0 120px; text-align: center; color: #555; font-size: 0.7rem; border-top: 1px solid var(--glass-border); }
+
+        @media (max-width: 768px) { .ba-grid { grid-template-columns: 1fr; } .hero-text h1 { font-size: 4rem; } }
+
+        /* ── New styles for contact section ── */
+        #contact {
+            background: var(--glass);
+            padding: 80px 8% 140px;
+            text-align: center;
+        }
+        #contact h2 { font-size: 2.5rem; margin-bottom: 30px; }
+        #contact .contact-info { max-width: 500px; margin: 0 auto; }
+        #contact p { margin: 15px 0; font-size: 1.1rem; }
+        #contact a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        #contact .social-links { font-size: 2.5rem; margin: 40px 0; }
+        #contact .social-links a { margin: 0 20px; color: #fff; transition: 0.3s; }
+        #contact .social-links a:hover { color: var(--primary); transform: scale(1.1); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">C&J <span>DETAILING</span></div>
+        <div style="font-size: 0.6rem; font-weight: 800; opacity: 0.5;">CPT • MOBILE</div>
+    </nav>
+
+    <div id="page-wrapper">
+        <header>
+            <div class="hero-text">
+                <h1>PURE <br>REFLECT<span>.</span></h1>
+                <p style="color: #888; margin-top: 15px; letter-spacing: 3px; font-weight: 600; font-size: 0.8rem;">ULTIMATE AUTO CARE</p>
+                <a href="https://wa.me/27691485037?text=Hi%20there!%20I'd%20like%20to%20ask%20about%20your%20pricing%20and%20availability%20please." 
+   target="_blank" 
+   class="btn">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  Chat on WhatsApp
+</a>
+            </div>
+        </header>
+
+        <div class="ticker-wrap">
+            <div class="ticker">
+                <span>• Full House Detailing</span><span>• Deep Interior Cleans</span><span>• Paint Correction</span><span>• Ceramic Coating</span><span>• Headlight Restoration</span>
+                <span>• Full House Detailing</span><span>• Deep Interior Cleans</span><span>• Paint Correction</span><span>• Ceramic Coating</span><span>• Headlight Restoration</span>
+            </div>
+        </div>
+
+        <section class="section">
+            <div class="ba-grid">
+                <div class="ba-item reveal"><img src="https://images.unsplash.com/photo-1599256621730-535171e28e50?auto=format&fit=crop&w=1200"><div class="label">BEFORE</div></div>
+                <div class="ba-item reveal"><img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200"><div class="label" style="color: var(--primary);">AFTER</div></div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="grid">
+                <div class="card reveal">
+                    <h3>Quick Wash</h3><span class="price">R125</span>
+                    <ul class="package-list">
+                        <li><i class="fas fa-check"></i> Foam Wash &amp; Dry</li>
+                        <li><i class="fas fa-check"></i> Mag Clean &amp; Tyre Shine</li>
+                    </ul>
+                    <button class="btn" onclick="openBooking('Quick Wash')">SELECT</button>
+                </div>
+                <div class="card reveal" style="border-color: var(--primary);">
+                    <h3>Full House</h3><span class="price">R200</span>
+                    <ul class="package-list">
+                        <li><i class="fas fa-check"></i> Quick Wash +</li>
+                        <li><i class="fas fa-check"></i> Full Interior Vacuum</li>
+                    </ul>
+                    <button class="btn" style="background: var(--primary); color: #fff;" onclick="openBooking('Full House')">SELECT</button>
+                </div>
+                <div class="card reveal">
+                    <h3>The Detail</h3><span class="price">R550</span>
+                    <ul class="package-list">
+                        <li><i class="fas fa-check"></i> Full House +</li>
+                        <li><i class="fas fa-check"></i> Deep Interior & Exterior Clean </li>
+                    </ul>
+                    <button class="btn" onclick="openBooking('The Detail')">SELECT</button>
+                </div>
+            </div>
+        </section>
+
+        <footer>&copy; 2026 C&J AUTO DETAILING</footer>
+    </div>
+
+    <div class="booking-bar">
+        <p>GET YOUR GLOSS</p>
+        <div class="book-now" onclick="openBooking()">BOOKING SYSTEM</div>
+    </div>
+
+    <div id="bookingOverlay">
+        <div class="booking-content">
+            <span class="close" onclick="closeBooking()">&times;</span>
+            
+            <div id="step1" class="step active">
+                <h2 style="margin-bottom: 25px;">Car Size</h2>
+                <div class="option" onclick="setSize('Small')"><h4>Small</h4><p>Coupes, Hatchbacks, Sedans</p></div>
+                <div class="option" onclick="setSize('Large')"><h4>Large</h4><p>SUVs, Bakkies, Trucks, Vans</p></div>
+            </div>
+
+            <div id="step2" class="step">
+                <h2 style="margin-bottom: 25px;">Select Package</h2>
+                <div class="option" onclick="setPkg('Quick Wash')"><h4 id="label-quick">Quick Wash</h4><p id="price-quick"></p></div>
+                <div class="option" onclick="setPkg('Full House')"><h4 id="label-full">Full House</h4><p id="price-full"></p></div>
+                <div class="option" onclick="setPkg('The Detail')"><h4 id="label-detail">The Detail</h4><p id="price-detail"></p></div>
+
+                <!-- Added: Other Services button linking to contact section -->
+                <div style="margin-top: 40px; text-align: center;">
+                    <button class="btn" onclick="window.location.href='#contact'; closeBooking();">Other Services</button>
+                    <p style="margin-top: 12px; font-size: 0.85rem; color: #aaa;">
+                        Looking for paint correction, ceramic coating, engine detailing, headlight restoration or something custom?<br>Let’s chat!
+                    </p>
+                </div>
+            </div>
+
+            <div id="step3" class="step">
+                <h2 style="margin-bottom: 25px;">Car Details</h2>
+                <input type="text" id="brand" placeholder="Brand (e.g. BMW)">
+                <input type="text" id="model" placeholder="Model (e.g. M3)">
+                <input type="text" id="year" placeholder="Year (e.g. 2024)">
+                <button class="btn" style="width: 100%;" onclick="go(4)">NEXT STEP</button>
+            </div>
+
+            <div id="step4" class="step">
+                <h2 style="margin-bottom: 25px;">Personal Info</h2>
+                <input type="text" id="name" placeholder="Full Name">
+                <input type="email" id="email" placeholder="Email Address">
+                <input type="tel" id="phone" placeholder="Phone Number">
+                <input type="text" id="addr" placeholder="Service Address">
+                <button class="btn" style="width: 100%;" onclick="go(5)">NEXT STEP</button>
+            </div>
+
+            <div id="step5" class="step">
+                <h2 style="margin-bottom: 25px;">Schedule</h2>
+                <label style="display:block; font-size:0.7rem; color:#888; margin-bottom:5px;">Date</label>
+                <input type="date" id="date">
+                <label style="display:block; font-size:0.7rem; color:#888; margin-bottom:5px;">Time</label>
+                <input type="time" id="time">
+                <button class="btn" id="sub" style="width: 100%; background: var(--primary); color: #fff;" onclick="submit()">CONFIRM BOOKING</button>
+            </div>
+
+            <div id="step6" class="step" style="text-align: center;">
+                <i class="fas fa-check-circle" style="font-size: 3.5rem; color: var(--primary); margin-bottom: 20px;"></i>
+                <h2>CONFIRMED!</h2>
+                <p style="color: #888; margin-top: 10px;">We've received your data. We'll contact you shortly to finalize.</p>
+                <button class="btn" style="margin-top: 25px;" onclick="closeBooking()">BACK TO SITE</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Contact Section -->
+    <section id="contact" class="section">
+        <h2>Get in Touch for Custom Services</h2>
+        <div class="contact-info">
+            <p><i class="fab fa-whatsapp" style="margin-right: 10px; color: var(--primary); font-size: 1.4rem;"></i> 
+               <a href="https://wa.me/27691485037?text=Hi%20C&J%20Detailing!%20I%20need%20a%20custom%20service..." target="_blank">+27 69 148 5037 (WhatsApp)</a></p>
+            
+            <p><i class="fas fa-phone" style="margin-right: 10px; color: var(--primary); font-size: 1.4rem;"></i> 
+               +27 69 148 5037</p>
+            
+            <p><i class="fas fa-envelope" style="margin-right: 10px; color: var(--primary); font-size: 1.4rem;"></i> 
+               DM us or email: connor@cjdetailingcpt.com</p>
+
+            <div class="social-links">
+                <a href="https://www.instagram.com/cjdetailingcpt" target="_blank" title="@cjdetailingcpt on Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@cjdetailingcpt" target="_blank" title="@cjdetailingcpt on TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+
+            <p style="margin-top: 30px; font-size: 0.9rem; color: #777;">
+                Mobile service across Cape Town — tell us what you need and we’ll sort you out!
+            </p>
+        </div>
+    </section>
+
+    <!-- Updated Footer with your socials -->
+    <footer style="padding-bottom: 180px;">
+        <div class="social-links" style="font-size: 2rem; margin-bottom: 20px;">
+            <a href="https://www.instagram.com/cjdetailingcpt" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@cjdetailingcpt" target="_blank"><i class="fab fa-tiktok"></i></a>
+        </div>
+        &copy; <script>document.write(new Date().getFullYear());</script> C&J AUTO DETAILING • CPT • MOBILE
+    </footer>
+
+    <script>
+        let bookingData = {};
+
+        function openBooking(p) { 
+            document.getElementById('bookingOverlay').style.display='flex'; 
+            if(p) {
+                bookingData.preSelectedPackage = p;
+                go(1); 
+            } else {
+                go(1);
+            }
+        }
+        
+        function closeBooking() { document.getElementById('bookingOverlay').style.display='none'; go(1); }
+        function go(n) { document.querySelectorAll('.step').forEach(s=>s.classList.remove('active')); document.getElementById('step'+n).classList.add('active'); }
+        
+        function setSize(s) { 
+            bookingData.size = s; 
+            if(s === 'Small') {
+                document.getElementById('price-quick').innerText = "R125 - Basic foam wash & vacuum";
+                document.getElementById('price-full').innerText = "R200 - Interior deep clean & polish";
+                document.getElementById('price-detail').innerText = "R550 - Engine bay & full restoration";
+            } else {
+                document.getElementById('price-quick').innerText = "R175 - Basic foam wash & vacuum";
+                document.getElementById('price-full').innerText = "R250 - Interior deep clean & polish";
+                document.getElementById('price-detail').innerText = "R675 - Engine bay & full restoration";
+            }
+
+            if(bookingData.preSelectedPackage) {
+                setPkg(bookingData.preSelectedPackage);
+                bookingData.preSelectedPackage = null;
+            } else {
+                go(2); 
+            }
+        }
+
+        function setPkg(p) { 
+            bookingData.package = p; 
+            go(3); 
+        }
+
+        async function submit() {
+            const b = document.getElementById('sub');
+            b.innerText = "SENDING...";
+            
+            bookingData.brand = document.getElementById('brand').value;
+            bookingData.model = document.getElementById('model').value;
+            bookingData.year = document.getElementById('year').value;
+            bookingData.name = document.getElementById('name').value;
+            bookingData.email = document.getElementById('email').value;
+            bookingData.phone = document.getElementById('phone').value;
+            bookingData.address = document.getElementById('addr').value;
+            bookingData.date = document.getElementById('date').value;
+            bookingData.time = document.getElementById('time').value;
+            bookingData.timestamp = new Date();
+
+            try {
+                await window.addDoc(window.collection(window.db, "bookings"), bookingData);
+                go(6);
+            } catch (e) {
+                alert("Error saving data. Please try again.");
+                b.innerText = "CONFIRM BOOKING";
+            }
+        }
+
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    </script>
+</body>
+</html>
